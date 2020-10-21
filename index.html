@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Presence Demo Application</title>
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    </head>
+    <body>
+    <div class="body-container">
+        <p>Welcome to the Presence demo application. Through this application, you can see quick examples of how to implement Presence to enable biometric authentication in your own websites and applications.</p>
+        <h2>Before you start</h2>
+        <p>Make sure you have set your public key in the javascript code, and make sure you have set a dummy user UUID to use. The UUID will be the reference to the user in your Presence account area.</p>
+        <h2>The Presence way</h2>
+        <div>
+            <div class="button" id="register-button-presence">Register</div>
+            <p>The button above generates a PresenceUser and passes it to your server side application.</p>
+            <div class="button" id="login-button-presence">Login</div>
+            <p>The button above allows authentication for an existing PresenceUser.</p>
+        </div>
+    </div>
+    <p>Copyright &copy; Mioko Technologies 2020</p>
+    <script type="application/javascript">
+        // override this with your own WebAuth back-end address if you would like to test with that instead
+        const miokoApiDomainOverride = 'https://presence.mioko.tech';
+    </script>
+    <script src="https://js.mioko.tech/presence-0.1.0.min.js"></script>
+    <script type="text/javascript">
+        // set your UUID and your public key here. Public keys are from the Presence > My Account area online.
+        const myUser = new PresenceUser('yourUuidHere', 'yourPublicKeyHere');
+
+        const registerButtonWebAuth = document.getElementById("register-button-presence");
+        registerButtonWebAuth.addEventListener("click", async function(){
+            const result = await myUser.registerWebAuth();
+
+            // Important note: The API request below includes your secret key for demo purposes only.
+            // Your secret key enables any users to be added to your account. In a shared environment,
+            // you should instead call a secure API endpoint in your own system which receives the payload
+            // and appends the secret key before submitting to the Presence API.
+            await axios.post(
+                'https://presence.mioko.tech/webauth-register-submit',
+                result,
+                {
+                    headers: {
+                        secretKey: "yourKeyHere", // Set your secret key here. Secret keys are from the Presence > My Account area online.
+                    }
+                }
+            ).then(async response => {
+                alert('Registration successful!');
+
+                // handle successful registration for your user
+            });
+        });
+
+        const loginButtonWebAuth = document.getElementById("login-button-presence");
+        loginButtonWebAuth.addEventListener("click", async function() {
+            const result = await myUser.loginWebAuth();
+
+            alert('Login successful!');
+
+            // the user is now authenticated with presence
+            // now send a query to your own API which will securely verify on the back-end with the secretkey and the /api/client-login-verify endpoint
+            // and you should then receive your normal JWT or other response back from your own API
+        });
+    </script>
+    </body>
+</html>

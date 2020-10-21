@@ -1,0 +1,11 @@
+https-portal:
+  image: steveltn/https-portal:1
+  ports:
+    - '8181:443'
+  environment:
+    STAGE: 'local'
+    DOMAINS: '0.0.0.0, your-mac.local, localhost' # replace your-mac.local with your own Mac name
+  volumes:
+    - ./:/var/www/vhosts/0.0.0.0
+    - ./:/var/www/vhosts/your-mac.local # replace your-mac.local with your own Mac name
+    - ./:/var/www/vhosts/localhost
