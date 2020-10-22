@@ -24,6 +24,7 @@
         const miokoApiDomainOverride = 'https://presence.mioko.tech';
     </script>
     <script src="https://js.mioko.tech/presence-0.1.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script type="text/javascript">
         // set your UUID and your public key here. Public keys are from the Presence > My Account area online.
         const myUser = new PresenceUser('yourUuidHere', 'yourPublicKeyHere');
@@ -37,7 +38,7 @@
             // you should instead call a secure API endpoint in your own system which receives the payload
             // and appends the secret key before submitting to the Presence API.
             await axios.post(
-                'https://presence.mioko.tech/webauth-register-submit',
+                'https://presence.mioko.tech/api/webauth-register-submit',
                 result,
                 {
                     headers: {
@@ -45,9 +46,10 @@
                     }
                 }
             ).then(async response => {
-                alert('Registration successful!');
-
-                // handle successful registration for your user
+                if(response.status === 200) {
+                    alert('Registration successful!');
+                    // handle successful registration for your user
+                }
             });
         });
 
